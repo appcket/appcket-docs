@@ -1,0 +1,34 @@
+---
+id: welcome
+title: Welcome
+slug: /
+---
+
+### What is Appcket?
+
+You have an idea for an app you want to build. Appcket is like strapping your **app** idea to a ro**cket** :rocket:. It's a starter-kit that aims to provide teams and developers like yourself with a solid base on which to build their next great web app so you can get up and running *quickly*.
+
+We believe starting, developing, testing and deploying a web application these days shouldn't be complex even when using Kubernetes. The "boring" part of gluing everything together and making sure all the details are covered has been done for you so you can focus on your competitive advantage and what makes your idea unique.
+
+### What's included
+
+* Single page app using [React](https://reactjs.org/) + Typescript
+* GraphQL API using [NestJs](https://nestjs.com/) + Typescript
+* Authentication and Authorization using [Keycloak](https://www.keycloak.org/)
+    * User accounts and profiles
+    * User registration
+    * Forgot password
+* Local development using [Kubernetes](https://kubernetes.io/)
+* [Postgres](https://www.postgresql.org/) Database
+
+The [main appcket repo](https://github.com/appcket/appcket) contains everything you need to get started like a React-based client app that talks to a NestJS GraphQL API running in Kubernetes - all backed by a Postgres database.
+
+It even comes with a fully working Keycloak instance. A secure and full-featured user accounts experience awaits you and your users. Don't worry about integrating a custom Authentication and Authorization system because Appcket already does this for you!
+
+If this sounds exciting, read on in the [Getting Started](../getting-started/prerequisites) section!
+
+### What it's not
+
+Appcket is not for beginners just starting out learning how to build a web application. It's also not for developers or teams who want to deploy to the cheapest web host they can find.
+
+It's mainly for those who want to learn about or use Kubernetes and microservices in a cloud provider like AWS EKS, DigitalOcean Kubernetes, and the like.
