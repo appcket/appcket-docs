@@ -21,7 +21,7 @@ We believe starting, developing, testing and deploying a web application these d
 * Local development using [Kubernetes](https://kubernetes.io/)
 * [Postgres](https://www.postgresql.org/) Database
 
-The [main appcket repo](https://github.com/appcket/appcket) contains everything you need to get started like a React-based client app that talks to a NestJS GraphQL API running in Kubernetes - all backed by a Postgres database.
+The [main appcket repo](https://github.com/appcket/appcket-org) contains everything you need to get started like a React-based client app that talks to a NestJS GraphQL API running in Kubernetes - all backed by a Postgres database.
 
 It even comes with a fully working Keycloak instance. A secure and full-featured user accounts experience awaits you and your users. Don't worry about integrating a custom Authentication and Authorization system because Appcket already does this for you!
 
