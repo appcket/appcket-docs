@@ -6,8 +6,7 @@ module.exports = {
       label: 'Getting Started',
       items: [
         'getting-started/prerequisites',
-        'getting-started/installation-initial-setup',
-        'getting-started/doc3'
+        'getting-started/installation-initial-setup'
       ]
     },
     {
