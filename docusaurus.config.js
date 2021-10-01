@@ -1,7 +1,7 @@
 module.exports = {
   title: 'Appcket Documentation',
   tagline: 'Learn how to use Appcket for your application',
-  url: 'https://docs.appcket.org',
+  url: 'https://appcket.org',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -16,10 +16,10 @@ module.exports = {
         src: 'img/logo.svg',
       },
       items: [
-        {
-          href: 'https://appcket.org/',
-          label: 'Appcket.org',
-        },
+        // {
+        //   href: 'https://appcket.org/',
+        //   label: 'Appcket.org',
+        // },
         {
           href: 'https://github.com/appcket/appcket-org',
           label: 'GitHub',
@@ -34,13 +34,9 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Style Guide',
-              to: 'docs/',
-            },
-            {
-              label: 'Second Doc',
-              to: 'docs/doc2/',
-            },
+              label: 'Getting Started',
+              to: 'getting-started/installation-initial-setup/',
+            }
           ],
         },
         {
@@ -50,10 +46,10 @@ module.exports = {
               label: 'Stack Overflow',
               href: 'https://stackoverflow.com/questions/tagged/appcket',
             },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/appcket',
-            },
+            // {
+            //   label: 'Twitter',
+            //   href: 'https://twitter.com/appcket',
+            // },
           ],
         },
         {
@@ -61,7 +57,7 @@ module.exports = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/appcket/appcket',
+              href: 'https://github.com/appcket/appcket-org',
             },
           ],
         },

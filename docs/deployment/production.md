@@ -3,7 +3,12 @@ id: production
 title: Production
 ---
 
-These docs are still a work in progress and need to be refined, mainly by adding helm chart steps. But the process is similar to setting up everything for local devlopment.
+:::note
+
+These docs are still a work in progress and need to be refined, mainly by adding helm chart steps. But the process is similar to setting up everything for [local devlopment](/getting-started/installation-initial-setup).
+
+:::
+
 
 This page has details on how to deploy an Appcket based application to a production Kubernetes cluster.
 
