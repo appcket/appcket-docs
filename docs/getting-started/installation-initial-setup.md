@@ -281,12 +281,12 @@ This is where it all comes together.
 
 Setup environment variables in Insomnia and POST to the openid-connect token endpoint for the accounts server
 
-curl --request POST \
-  --url https://accounts.appcket.localhost/auth/realms/appcket/protocol/openid-connect/token \
-  --header 'content-type: application/x-www-form-urlencoded' \
-  --data client_id=appcket_api \
-  --data grant_type=password \
-  --data client_secret=clientsecretid \
-  --data scope=openid \
-  --data username=yourusername \
-  --data password=yourpasswordforusername
+    curl --request POST \
+    --url https://accounts.appcket.localhost/auth/realms/appcket/protocol/openid-connect/token \
+    --header 'content-type: application/x-www-form-urlencoded' \
+    --data client_id=appcket_api \
+    --data grant_type=password \
+    --data client_secret=clientsecretid \
+    --data scope=openid \
+    --data username=yourusername \
+    --data password=yourpasswordforusername
