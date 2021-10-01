@@ -10,10 +10,10 @@ module.exports = {
   projectName: 'appcket-docs', // Usually your repo name.
   themeConfig: {
     navbar: {
-      title: 'Docs Home',
+      title: 'Appcket Docs Home',
       logo: {
         alt: 'Appcket Logo',
-        src: 'img/logo.svg',
+        src: 'img/appcket-logo.svg',
       },
       items: [
         // {
