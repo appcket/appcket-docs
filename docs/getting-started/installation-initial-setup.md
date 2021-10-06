@@ -87,7 +87,7 @@ The following is needed to run everything the first time on your local developme
     * `kubectl exec -n appcket -it svc/api -- bash`
     * `kubectl exec -n appcket -it svc/app -- bash`
     * You can also now use VS Code Remote Containers to work on the volume mounted files directly in the container
-        * Shift + ctrl + P -> Attach to Running Container -> k8s_app_app-* or k8s_ap_api-*
+        * Shift + ctrl + P -> Attach to Running Container -> k8s_app_app-* or k8s_app_api-*
 
 ### Setup Appcket Realm in Keycloak
 

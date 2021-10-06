@@ -8,12 +8,19 @@ module.exports = {
   favicon: 'img/favicon.ico',
   organizationName: 'appcket', // Usually your GitHub org/user name.
   projectName: 'appcket-docs', // Usually your repo name.
+  plugins: [
+    ['@docusaurus/plugin-google-gtag',
+      {
+        id: 'plugin-gtag-1',
+      },
+    ]
+  ],
   themeConfig: {
     navbar: {
       title: 'Appcket Docs Home',
       logo: {
         alt: 'Appcket Logo',
-        src: 'img/appcket-logo.svg',
+        src: 'img/appcket-logo.png',
       },
       items: [
         // {
@@ -63,6 +70,9 @@ module.exports = {
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Appcket. Built with Docusaurus.`,
+    },
+    gtag: {
+      trackingID: 'G_TAG_HERE'
     },
   },
   presets: [
