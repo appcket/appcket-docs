@@ -10,6 +10,10 @@ You have an idea for an app you want to build. Appcket is like strapping your **
 
 We believe starting, developing, testing and deploying a web application these days shouldn't be complex even when using Kubernetes. The "boring" part of gluing everything together and making sure all the details are covered has been done for you so you can focus on your competitive advantage and what makes your idea unique.
 
+### Simple Demo
+
+![Appcket Demo](/img/appcket-demo.gif)
+
 ### What's included
 
 * Single page app using [React](https://reactjs.org/) + Typescript
@@ -33,7 +37,3 @@ If this sounds exciting, read on in the [Getting Started](../getting-started/pre
 Appcket is not for beginners just starting out learning how to build a web application. It's also not for developers or teams who want to deploy to the cheapest web host they can find.
 
 It's mainly for those who want to learn about or use Kubernetes and microservices in a cloud provider like AWS EKS, DigitalOcean Kubernetes, and the like.
-
-### Simple Demo
-
-![Appcket Demo](/img/appcket-demo.gif)

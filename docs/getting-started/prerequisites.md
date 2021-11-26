@@ -23,7 +23,11 @@ Install Windows software using [Chocolatey](https://chocolatey.org/) or similar.
     * Enable Kubernetes
 1. [Docker Compose](https://docs.docker.com/compose/install/)
 1. [Istio](https://istio.io/) - 1.11+
-1. [Mkcert](https://github.com/FiloSottile/mkcert) - latest
+    * Run Powershell as Administrator and run the command:
+    * `choco install istioctl`
+1. [Mkcert](https://github.com/FiloSottile/mkcert)
+    * Run Powershell as Administrator and run the command:
+    * `choco install mkcert`
 1. [Visual Studio Code](https://code.visualstudio.com/) - latest
     * [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
     * [Eslint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
@@ -32,3 +36,20 @@ Install Windows software using [Chocolatey](https://chocolatey.org/) or similar.
 ### WSL/Ubuntu software
 
 1. [Helm](https://helm.sh/docs/intro/install/) - 3+
+1. [Mkcert](https://github.com/FiloSottile/mkcert)
+    * `wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.3/mkcert-v1.4.3-linux-amd64`
+    * `sudo mv mkcert-v1.4.3-linux-amd64 /usr/local/bin/mkcert`
+    * `sudo chmod +x /usr/local/bin/mkcert`
+1. [psql](https://www.postgresql.org/docs/current/app-psql.html)
+    * `sudo apt-get update`
+    * `sudo apt-get install -y postgresql-client`
+
+### Setup Mkcert in Windows and WSL
+You will notice that you installed Mkcert in Windows with Chocolatey and also in Ubuntu WSL with apt-get. This is so we can create certs using the Linux version of mkcert and also those certs will be valid in Windows apps like Chrome and Firefox for local development.
+
+1. In Windows Powershell, find out where the mkcert directory is
+    * `mkcert.exe -CAROOT`
+1. In a Windows Terminal WSL shell, find out where the mkcert directory is
+    * `mkcert -CAROOT`
+1. Copy the rootCA files from Windows to the WSL mckert directory
+    * ex: `sudo cp /mnt/c/Users/{YourUsername}/AppData/Local/mkcert/rootCA* /home/{YourUsername}/.local/share/mkcert`
