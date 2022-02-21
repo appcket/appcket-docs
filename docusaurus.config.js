@@ -9,9 +9,11 @@ module.exports = {
   organizationName: 'appcket', // Usually your GitHub org/user name.
   projectName: 'appcket-docs', // Usually your repo name.
   plugins: [
-    ['@docusaurus/plugin-google-gtag',
+    [
+      '@docusaurus/plugin-google-gtag',
       {
-        id: 'plugin-gtag-1',
+        trackingID: 'G_TAG_HERE',
+        anonymizeIP: true,
       },
     ]
   ],
@@ -70,9 +72,6 @@ module.exports = {
         },
       ],
       copyright: `Copyright © ${new Date().getFullYear()} Appcket. Built with Docusaurus.`,
-    },
-    gtag: {
-      trackingID: 'G_TAG_HERE'
     },
   },
   presets: [

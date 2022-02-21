@@ -49,23 +49,23 @@ Make a backup of the keycloak (accounts) and api schemas
 
 exec into the database container and run commands:
 
-    docker exec -it appcket_database_1 bash
+    docker exec -it appcket-database-1 bash
     cd /tmp
-    pg_dump --verbose --host=localhost --port=5432 --username=appcketuser --format=c -n "appcket" -n "keycloak" appcket > appcket_keycloak.backup
+    pg_dump --verbose --host=localhost --port=5432 --username=dbuser --format=c -n "appcket" -n "keycloak" appcket > appcket_keycloak.backup
 
 To get a plaintext dump run
 
 appcket_dump.sql
 
-        pg_dump --verbose --host=localhost --port=5432 --username=appcketuser --inserts -n "appcket" appcket > appcket_dump.sql
+        pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "appcket" appcket > appcket_dump.sql
 
 keycloak_dump.sql
 
-        pg_dump --verbose --host=localhost --port=5432 --username=appcketuser --inserts -n "keycloak" appcket > keycloak_dump.sql
+        pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "keycloak" appcket > keycloak_dump.sql
 
 The backup should now be on your host filesystem in deployment/environment/local/api_public_dump.backup
 
-If you need to restore a .backup file for postgres: `pg_restore -h localhost -p 5432 -U appcketuser -d appcket api_public_dump.backup`
+If you need to restore a .backup file for postgres: `pg_restore -h localhost -p 5432 -U dbuser -d appcket api_public_dump.backup`
 
 
 ### Setup Appcket Realm in Keycloak

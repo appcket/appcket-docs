@@ -12,11 +12,11 @@ These docs are still a work in progress and need to be refined, mainly by adding
 
 This page has details on how to deploy an Appcket based application to a production Kubernetes cluster.
 
-## Digital Ocean
+## DigitalOcean
 
 For deploying to DigialOcean, we can leverage the following offerings: Droplet (regular VM), Kubernetes service, Load Balancer, Private Container Registry, and Managed Postgres database.
 
-The approximate [monthly price](https://www.digitalocean.com/pricing/) for all of this is $60. You might be able to save a little money by hosting your own container registry and database server, but it is recommended to use the available services for these items.
+The approximate [monthly price](https://www.digitalocean.com/pricing/) for all of this is $60. You might be able to save a little money by hosting your own container registry and database server, but it is recommended to use the available managed services for these items.
 
 ### Droplet (Optional)
 

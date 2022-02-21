@@ -16,6 +16,7 @@ module.exports = {
         'deployment/production'
       ]
     },
-    'troubleshooting'
+    'troubleshooting',
+    'best-practices'
   ],
 };

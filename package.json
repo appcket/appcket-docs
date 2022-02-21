@@ -12,8 +12,8 @@
     "clear": "docusaurus clear"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-beta.6",
-    "@docusaurus/preset-classic": "2.0.0-beta.6",
+    "@docusaurus/core": "2.0.0-beta.15",
+    "@docusaurus/preset-classic": "2.0.0-beta.15",
     "@mdx-js/react": "^1.6.21",
     "clsx": "^1.1.1",
     "react": "^16.8.4",
@@ -32,9 +32,9 @@
     ]
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^2.0.0-beta.6",
-    "@docusaurus/plugin-google-gtag": "^2.0.0-beta.6",
-    "@tsconfig/docusaurus": "^1.0.2",
+    "@docusaurus/module-type-aliases": "^2.0.0-beta.15",
+    "@docusaurus/plugin-google-gtag": "^2.0.0-beta.15",
+    "@tsconfig/docusaurus": "^1.0.4",
     "@types/react": "^17.0.24",
     "@types/react-helmet": "^6.1.0",
     "@types/react-router-dom": "^5.1.7",

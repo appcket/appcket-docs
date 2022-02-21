@@ -41,15 +41,21 @@ When running any commands below with {PROJECT_MACHINE_NAME}, change this to your
 ### Run the Bootstrap Script
 
 1. A deployment/bootstrap.sh script is provided that will perform the main setup steps for a fresh appcket project.
-    1. Please edit the deployment/bootstrap.sh file and change the values of the `PROJECT_MACHINE_NAME` and `PROJECT_HUMAN_NAME` variables.
+    1. Edit the `deployment/bootstrap.sh` file and change the values of the `PROJECT_MACHINE_NAME` and `PROJECT_HUMAN_NAME` variables.
     1. Then run the script from inside the deployment folder
         * `cd ~/dev/{PROJECT_MACHINE_NAME}/deployment`
         * `chmod +x ./bootstrap.sh`
         * `./bootstrap.sh`
 
+:::note
+
+Running the bootstrap script will take some time depending on your internet connection speed.
+
+:::
+
 ### Create Tables and Seed Data
 
-Prisma ORM is used in the api to interact with the database. We also use the Prisma CLI to migrate and seed the initial sample data.
+Prisma ORM is used in the api to interact with the database. We also use the Prisma CLI to migrate and seed the initial sample data for the application. Accounts (Keycloak) data was setup when you ran the bootstrap script.
 
 1. `cd deployment/database`
 1. `yarn`
@@ -65,12 +71,14 @@ Prisma ORM is used in the api to interact with the database. We also use the Pri
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml --dry-run --debug`
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml`
 1. Exec into running pods and yarn start them up and get to work. Be sure to run `yarn` to install npm modules
-    * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/marketing -- bash`
     * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/api -- bash`
     * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/app -- bash`
+    * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/marketing -- bash`
+        * Source code is mounted into the `/src` folder inside each container
+        * The marketing app is started in "production mode" by default. This means that its dockerfile is based on nginx and builds and serves files for production. But if you want to develop your marketing site, add the command in the deployment/helm/templates/appcket/marketing.yaml helm chart to `command: ["/bin/sh"]` and use the `{PROJECT_MACHINE_NAME}_nodejs` image instead of the `{PROJECT_MACHINE_NAME}_marketing` in `deployment/heml/values-local.yaml`.
     * You can also now use VS Code Remote Containers to work on the volume mounted files directly in the container
         * Shift + ctrl + P -> Attach to Running Container -> k8s_app_app-... or k8s_api_api-...
-    * Once you have an active shell in each container, you can run `yart start:dev` to start the api and `yarn start` for the app. The Keycloak/accounts server will start automatically.
+    * Once you have an active shell in each container, you can run `yarn` to install dependencies and then `yarn start:dev` to start the api and `yarn start` for the app. The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
     * Access these local containers in your browser
         * Marketing: https://PROJECT_MACHINE_NAME}.localhost
         * API: https://api.{PROJECT_MACHINE_NAME}.localhost
@@ -84,6 +92,21 @@ After going through the steps above for the initial setup, you can run the start
 1. `cd ./deployment`
 1. `sudo mkdir -p /mnt/wsl/docker-desktop-bind-mounts/Ubuntu/dev/appcket`
 1. `./environment/local/start.sh`
+
+
+### Database Schema Changes
+
+As you develop your application, you will need to update your data model. This is done by modfifying the deployment/database/schema.prisma file and then generating/seeding those changes.
+
+1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma generate`
+1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma migrate dev`
+1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma db seed`
+
+:::note
+
+Whenever you change deployment/database/prisma/schema.prisma, you should copy/paste into api/prisma/schema and generate there too so the api will also have the latest schema. TODO: Need to find a way to automatically keep this process in sync where changing one updates the other.
+
+:::
 
 ### Teardown/Delete Project (if necessary)
 
@@ -107,4 +130,4 @@ Executing the following commands will delete your local database and any data yo
 1. Unmount project directory
     * `sudo umount /mnt/wsl/docker-desktop-bind-mounts/Ubuntu/dev/{PROJECT_MACHINE_NAME}`
     * `sudo rm -rf /mnt/wsl/docker-desktop-bind-mounts/Ubuntu/dev/{PROJECT_MACHINE_NAME}`
-1. TODO: delete project-specific images from local registry
+1. TODO: delete project-specific images from local registry (can manually delete unused images using Docker Desktop GUI)

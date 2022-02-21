@@ -47,6 +47,9 @@ Install Windows software using [Chocolatey](https://chocolatey.org/) or similar.
 ### Setup Mkcert in Windows and WSL
 You will notice that you installed Mkcert in Windows with Chocolatey and also in Ubuntu WSL with apt-get. This is so we can create certs using the Linux version of mkcert and also those certs will be valid in Windows apps like Chrome and Firefox for local development.
 
+1. Run "mkcert -install" for certificates to be trusted automatically
+    * In Windows Powershell run `mkcert.exe -install`
+    * In a Windows Terminal WSL shell run `mkcert -install`
 1. In Windows Powershell, find out where the mkcert directory is
     * `mkcert.exe -CAROOT`
 1. In a Windows Terminal WSL shell, find out where the mkcert directory is
