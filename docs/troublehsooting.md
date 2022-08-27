@@ -257,3 +257,13 @@ Setup environment variables in Insomnia and POST to the openid-connect token end
     --data scope=openid \
     --data username=yourusername \
     --data password=yourpasswordforusername
+
+#### Docker Desktop Kubernetes Upgrade
+
+When Kubernetes gets upgraded, the namespace, secrets and coredns configmap may get deleted or reset. You will need to manually recreate these. Replace variables below with your own values, similar to when running bootsrap.sh.
+
+1. `kubectl delete configmap coredns -n kube-system`
+1. `kubectl create namespace ${PROJECT_MACHINE_NAME}`
+1. `kubectl create secret generic database-secret --from-literal=user=dbuser --from-literal=password=${DATABASE_PASSWORD} -n ${PROJECT_MACHINE_NAME}`
+1. `kubectl create secret generic accounts-secret --from-literal=adminuser=admin --from-literal=adminpassword=${DATABASE_PASSWORD} -n ${PROJECT_MACHINE_NAME}`
+1.`kubectl create secret generic api-keycloak-client-secret --from-literal=clientsecret=${API_CLIENT_KEYCLOAK_SECRET} -n ${PROJECT_MACHINE_NAME}`

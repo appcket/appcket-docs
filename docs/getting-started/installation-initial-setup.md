@@ -91,6 +91,7 @@ After going through the steps above for the initial setup, you can run the start
 
 1. `cd ./deployment`
 1. `sudo mkdir -p /mnt/wsl/docker-desktop-bind-mounts/Ubuntu/dev/appcket`
+1. `chmod +x ./start.sh`
 1. `./environment/local/start.sh`
 
 
