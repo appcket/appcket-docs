@@ -36,7 +36,7 @@ Install Windows software using [Chocolatey](https://chocolatey.org/) or similar.
     * Follow the [download and installation instructions](https://istio.io/latest/docs/setup/getting-started/#download) on istio.io
     * Be sure to add the following line to your `~/.profile`
         * `export PATH=~/path/to/istio/bin:$PATH`
-1. [Helm](https://helm.sh/docs/intro/install/) - 3+
+1. [Helm](https://helm.sh/docs/intro/install/#from-apt-debianubuntu) - 3+
 1. [Mkcert](https://github.com/FiloSottile/mkcert)
     * `wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64`
     * `sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert`

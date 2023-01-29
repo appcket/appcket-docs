@@ -18,7 +18,7 @@ We believe starting, developing, testing and deploying a web application these d
 
 * Single page app using [React](https://reactjs.org/) + Typescript
     * [MUI](https://mui.com/) used for the UI Component Library
-* GraphQL API using [NestJs](https://nestjs.com/) & [Prisma](https://www.prisma.io/) + Typescript
+* GraphQL API using [NestJs](https://nestjs.com/) & [MikroOrm](https://mikro-orm.io/) + Typescript
 * Authentication and Authorization using [Keycloak](https://www.keycloak.org/)
     * User accounts and profiles
     * User registration

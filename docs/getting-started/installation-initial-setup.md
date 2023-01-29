@@ -21,7 +21,7 @@ When running any commands below with {PROJECT_MACHINE_NAME}, change this to your
 
 :::
 
-1. Using Windows Terminal, create a ~/dev directory if one is not already created
+1. Using Windows Terminal in your Ubuntu WSL distribution, create a ~/dev directory if one is not already created
     1. `mkdir ~/dev`
     1. `cd ~/dev`
 1. Fork and clone the appcket-org repo into ~/dev/appcket
@@ -55,18 +55,17 @@ Running the bootstrap script will take some time depending on your internet conn
 
 ### Create Tables and Seed Data
 
-Prisma ORM is used in the api to interact with the database. We also use the Prisma CLI to migrate and seed the initial sample data for the application. Accounts (Keycloak) data was setup when you ran the bootstrap script.
+MikroOrm is used in the api to interact with the database. We also use the MikroOrm CLI to migrate and seed the initial sample data for the application. Accounts (Keycloak) data was setup when you ran the bootstrap script.
 
 1. `cd database` - if you are already inside the deployment folder
 1. `yarn`
-1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma migrate dev`
-    * It may ask you to name this first migration. You can use something like "migration_001" or whatever you prefer.
-1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma db seed`
+1. `yarn schema-seed`
+1. `yarn post-seed`
 
 ### Start Containers
 
 1. Start containers by installing Appcket to cluster via Helm Chart in deployment folder
-    * `cd ../deployment`
+    * `cd ../`
     * `helm package helm`
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml --dry-run --debug`
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml`
@@ -77,12 +76,20 @@ Prisma ORM is used in the api to interact with the database. We also use the Pri
         * Source code is mounted into the `/src` folder inside each container.
     * You can also now use VS Code Remote Containers to work on the volume mounted files directly in the container
         * Shift + ctrl + P -> Attach to Running Container -> k8s_app_app-... or k8s_api_api-...
-    * Once you have an active shell in each container, you need to run `yarn` to install dependencies and then `yarn start:dev` to start the api and `yarn start` for the app. The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
+    * Once you have an active shell in each container, you need to run `yarn` to install dependencies and then `yarn start:debug` to start the api in debug mode, `yarn start` for the app and `yarn start` for the marketing site. The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
     * Access these local containers in your browser
-        * Marketing: https://PROJECT_MACHINE_NAME}.localhost
+        * Marketing: https://{PROJECT_MACHINE_NAME}.localhost
         * API: https://api.{PROJECT_MACHINE_NAME}.localhost
         * App: https://app.{PROJECT_MACHINE_NAME}.localhost
+            * Login with any username below and `abc123` as the password
+                * `art` (Manager role)
+                * `ryan` (Captain role)
+                * `kel` (Teammate role)
+                * `he` (Teammate role)
+                * `lloyd` (Spectator role)
+            * ex: the Spectator role is view-only, so the lloyd user will only be able to see but can't edit or create anything
         * Accounts: https://accounts.{PROJECT_MACHINE_NAME}.localhost
+            * The default admin account username and password is `admin/admin`
 
 ### After Initial Setup
 
@@ -96,7 +103,9 @@ After going through the steps above for the initial setup, you can run the start
 
 ### Database Schema Changes
 
-As you develop your application, you will need to update your data model. This is done by modfifying the deployment/database/schema.prisma file and then generating/seeding those changes.
+TODO: Change this for use with Mikro-ORM specific steps.
+
+As you develop your application, you will need to update your data model. This is done by modfifying the `deployment/database/schema.prisma` file and then generating/seeding those changes.
 
 1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma generate`
 1. `./node_modules/.bin/dotenv -e .env.local -- ./node_modules/.bin/prisma migrate dev`
@@ -104,7 +113,7 @@ As you develop your application, you will need to update your data model. This i
 
 :::note
 
-Whenever you change deployment/database/prisma/schema.prisma, you should copy/paste into api/prisma/schema and generate there too so the api will also have the latest schema. TODO: Need to find a way to automatically keep this process in sync where changing one updates the other.
+Whenever you change deployment/database/prisma/schema.prisma, you should copy/paste into api/prisma/schema.prisma and generate there too so the api will also have the latest schema. TODO: Need to find a way to automate this process to keep both in sync where changing one updates the other.
 
 :::
 

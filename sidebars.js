@@ -11,9 +11,10 @@ module.exports = {
     },
     {
       type: 'category',
-      label: 'Deployment',
+      label: 'Production',
       items: [
-        'deployment/production'
+        'production/provision',
+        'production/build-deploy'
       ]
     },
     'troubleshooting',
