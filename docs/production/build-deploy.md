@@ -43,7 +43,7 @@ Your DigitalOcean infrastructure should now be in place and you should have an a
 
 ### Start containers
 
-Modify values in `deployment/helm/values-production.yaml` to match your production values (database, image.repository).
+Modify values in `deployment/helm/values-production.yaml` to match your production values (database.address, database.sslMode, image.repository).
 
 1. Start containers by installing Appcket to cluster via Helm Chart in deployment folder
     * `helm package helm`

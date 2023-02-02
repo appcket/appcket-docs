@@ -219,6 +219,8 @@ sudo chmod 644 /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/privkey.pem
     sudo cp /etc/letsencrypt/live/{PROJECT_MACHINE_NAME}.com/fullchain.pem marketing/certs/tls.crt
     * ```
     sudo cp /etc/letsencrypt/live/{PROJECT_MACHINE_NAME}.com/privkey.pem marketing/certs/tls.key
+1. Database
+    * DigitalOcean requires ssl connection to the database. So you need to download the ca-certificate.crt from the control panel and copy it to the `api/certs` folder
 
 ### Set up accounts schema and data
 
