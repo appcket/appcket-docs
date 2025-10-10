@@ -5,7 +5,7 @@ title: Prerequisites
 
 These instructions are intended to be performed using Windows, but as long as equivalent items are installed it should work fine on Linux or MacOS.
 
-On Windows, it is mandatory that you use WSL2 and the Ubuntu distro for all development work. In other words, do not save your files on the Windows C:\ drive. Your files (git repos) should be inside of the Ubuntu WSL filesystem at \\wsl$\Ubuntu\home\\{YourUsername}. See [this blog post](https://www.docker.com/blog/docker-desktop-wsl-2-best-practices/) for reasoning and best practices.
+On Windows, it is mandatory that you use WSL2 and the Ubuntu distro for all development work. In other words, do not save your files on the Windows C:\ drive. Your files (git repos) should be inside of the Ubuntu WSL filesystem at `\wsl$\Ubuntu\home\{YourUsername}`. See [this blog post](https://www.docker.com/blog/docker-desktop-wsl-2-best-practices/) for reasoning and best practices.
 
 Install Windows software using [Chocolatey](https://chocolatey.org/) or similar. Install Ubuntu software inside WSL Ubuntu using the normal apt process.
 
@@ -32,6 +32,8 @@ Install Windows software using [Chocolatey](https://chocolatey.org/) or similar.
 
 ### WSL/Ubuntu software
 
+1. [NodeJS via nvm](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl) - 24
+1. [pnpm](https://pnpm.io/installation) -latest
 1. [Istio](https://istio.io/) - 1.14+
     * Follow the [download and installation instructions](https://istio.io/latest/docs/setup/getting-started/#download) on istio.io
     * Be sure to add the following line to your `~/.profile`

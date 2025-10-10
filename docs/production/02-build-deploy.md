@@ -12,47 +12,68 @@ This page explains how to build the necessary Docker images and deploy them to y
 Your DigitalOcean infrastructure should now be in place and you should have an authenticated doctl cli client installed. It's time to build and deploy the app.
 
 1. [Authenticate your DevOps machine using doctl](https://docs.digitalocean.com/products/container-registry/how-to/use-registry-docker-kubernetes/#docker-integration) to be able to push images to your registry (if you haven't already done so)
-    * ```
+    ```
     doctl registry login
+    ```
 
 1. Build/download all necessary Docker images
-    * ```
+    ```
     cd deployment
-    * ```
     chmod +x ./build.sh
-    * ```
     ./build.sh -e production
+    ```
 1. Tag images
-    * ````
+    ```
     docker tag localhost:5000/{PROJECT_MACHINE_NAME}_accounts:v0.0.1 registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_accounts:v0.0.1
-    * ```
+    ```
+
+    ```
     docker tag localhost:5000/{PROJECT_MACHINE_NAME}_api:v0.0.1 registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_api:v0.0.1
-    * ```
+    ```
+
+    ```
     docker tag localhost:5000/{PROJECT_MACHINE_NAME}_app:v0.0.1 registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_app:v0.0.1
-    * ```
+    ```
+    ```
     docker tag localhost:5000/{PROJECT_MACHINE_NAME}_marketing:v0.0.1 registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_marketing:v0.0.1
+    ```
 1. Push images to registry
-    * ```
+    ```
     docker push registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_accounts:v0.0.1
-    * ```
+    ```
+
+    ```
     docker push registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_api:v0.0.1
-    * ```
+    ```
+
+    ```
     docker push registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_app:v0.0.1
-    * ```
+    ```
+
+    ```
     docker push registry.digitalocean.com/{PROJECT_MACHINE_NAME}-container-registry/{PROJECT_MACHINE_NAME}_marketing:v0.0.1
+    ```
 
 ### Start containers
 
 Modify values in `deployment/helm/values-production.yaml` to match your production values (database.address, database.sslMode, image.repository).
 
 1. Start containers by installing Appcket to cluster via Helm Chart in deployment folder
-    * `helm package helm`
-    * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-production.yaml --dry-run --debug`
-    * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-production.yaml`
+    ```
+    helm package helm
+    ```
 
-:::warning
+    ```
+    helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-production.yaml --dry-run --debug
+    ```
 
-The default Admin username and password is admin/admin. Please immediately login to accounts.{PROJECT_NAME}.com and change this to something strong! You can also change the username and password for the dummy user accounts.
+    ```
+    helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-production.yaml
+    ```
+
+:::danger
+
+The default Admin username and password is **admin/admin**. Please immediately login to accounts.`{PROJECT_NAME}`.com and change this to something strong! You can also change the username and password for the dummy user accounts at this time and store them in your teams password manager.
 
 :::
 

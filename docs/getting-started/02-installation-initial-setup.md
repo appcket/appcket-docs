@@ -17,7 +17,7 @@ The following steps need to be performed the first time on your local developmen
 
 :::note
 
-When running any commands below with {PROJECT_MACHINE_NAME}, change this to your own project's name.
+When running any commands below with `{PROJECT_MACHINE_NAME}`, change this to your own project's name.
 
 :::
 
@@ -58,9 +58,9 @@ Running the bootstrap script will take some time depending on your internet conn
 MikroOrm is used in the api to interact with the database. We also use the MikroOrm CLI to migrate and seed the initial sample data for the application. Accounts (Keycloak) data was setup when you ran the bootstrap script.
 
 1. `cd database` - if you are already inside the deployment folder
-1. `yarn`
-1. `yarn schema-seed`
-1. `yarn post-seed`
+1. `pnpm install`
+1. `pnpm schema-seed`
+1. `pnpm post-seed`
 
 ### Start Containers
 
@@ -69,18 +69,22 @@ MikroOrm is used in the api to interact with the database. We also use the Mikro
     * `helm package helm`
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml --dry-run --debug`
     * `helm install {PROJECT_MACHINE_NAME} ./{PROJECT_MACHINE_NAME}-0.1.0.tgz -n {PROJECT_MACHINE_NAME} -f helm/values-local.yaml`
-1. Exec into running pods and yarn start them up and get to work. Be sure to run `yarn` to install npm modules
+1. Exec into running pods and pnpm start them up and get to work. Be sure to run `pnpm install` to install npm modules
     * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/api -- bash`
     * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/app -- bash`
     * `kubectl exec -n {PROJECT_MACHINE_NAME} -it svc/marketing -- bash`
         * Source code is mounted into the `/src` folder inside each container.
     * You can also now use VS Code Remote Containers to work on the volume mounted files directly in the container
-        * Shift + ctrl + P -> Attach to Running Container -> k8s_app_app-... or k8s_api_api-...
-    * Once you have an active shell in each container, you need to run `yarn` to install dependencies and then `yarn start:debug` to start the api in debug mode, `yarn start` for the app and `yarn start` for the marketing site. The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
+        * Shift + ctrl + P
+        * Attach to Running Container
+        * Select a dev container: `k8s_app_app-...` or `k8s_api_api-...`
+    * Once you have an active shell in each container, you need to run `pnpm install` to install dependencies and then `pnpm start:debug` to start the api in debug mode, `pnpm start` for the app and `pnpm start` for the marketing site.
+    * You can also select `Run -> Start Debugging (F5)` to run each app in VS Code.
+    * The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
     * Access these local containers in your browser
-        * Marketing: https://{PROJECT_MACHINE_NAME}.localhost
-        * API: https://api.{PROJECT_MACHINE_NAME}.localhost
-        * App: https://app.{PROJECT_MACHINE_NAME}.localhost
+        * Marketing: `https://{PROJECT_MACHINE_NAME}.localhost`
+        * API: `https://api.{PROJECT_MACHINE_NAME}.localhost`
+        * App: `https://app.{PROJECT_MACHINE_NAME}.localhost`
             * Login with any username below and `abc123` as the password
                 * `art` (Manager role)
                 * `ryan` (Captain role)
@@ -88,7 +92,7 @@ MikroOrm is used in the api to interact with the database. We also use the Mikro
                 * `he` (Teammate role)
                 * `lloyd` (Spectator role)
             * ex: the Spectator role is view-only, so the lloyd user will only be able to see but can't edit or create anything
-        * Accounts: https://accounts.{PROJECT_MACHINE_NAME}.localhost
+        * Accounts: `https://accounts.{PROJECT_MACHINE_NAME}.localhost`
             * The default admin account username and password is `admin/admin`
 
 ### After Initial Setup

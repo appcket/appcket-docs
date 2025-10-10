@@ -125,7 +125,7 @@ Then, create a new Protocol Mapper in the appcket_app client as described below.
     1. In the appcket_app client, click on Mappers tab and Create button
     1. Name: Audience for appcket_app
     1. Type: Audience
-    1. Included Client Audience: appcket_api <--- important, make sure to select the api client and not app here
+    1. Included Client Audience: appcket_api - important, make sure to select the api client and not app here
     1. Add to access token: On
 
 See Keycloak documentation for more information: https://www.keycloak.org/docs/latest/server_admin/#_audience_hardcoded
@@ -150,7 +150,8 @@ Have users already created (in the new realm you previously created) that you ca
     1. Add resources that map to your application needs:
         * Resource name: Task (for multi-word resources, capitalize camel case, no spaces: "MyResource" instead of "My Resource")
 
-    You can use the admin console (GUI) to add resources, or POST to the Protection API* `resource_set` endpoint /auth/realms/${realm_name}/authz/protection/resource_set
+    You can use the admin console (GUI) to add resources, or POST to the Protection API* `resource_set` endpoint: `/auth/realms/${realm_name}/authz/protection/resource_set`
+    
     See https://www.keycloak.org/docs/latest/authorization_services/#creating-a-resource for more information.
 
     * You will need a valid [Protection API Token - PAT](https://www.keycloak.org/docs/latest/authorization_services/#_service_protection_whatis_obtain_pat) in order to use the Protection API.
@@ -162,6 +163,7 @@ Have users already created (in the new realm you previously created) that you ca
     Protection API:
     PUT endpoint https://accounts.appcket.localhost/auth/realms/${realm_name}/authz/protection/resource_set/{resource_id}
     JSON Body:
+    ```
     {
         "_id": "Task",
         "name":"Task",
@@ -172,6 +174,7 @@ Have users already created (in the new realm you previously created) that you ca
             "task:delete"
         ]
     }
+    ```
 
     Admin Console - GUI
     1. Navigate to the desired service client (api for example) from precondition above and click on Authorization tab

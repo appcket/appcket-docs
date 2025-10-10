@@ -16,10 +16,10 @@ You will need either a dedicated VM or perhaps another laptop that is designated
 The Ubuntu OS is recommended and you will need to install the following:
 
 1. [Node.js](https://github.com/nodesource/distributions/blob/master/README.md#debinstall)
-1. [Yarn](https://yarnpkg.com/getting-started/install)
+1. [pnpm](https://pnpm.io/installation)
 1. [Docker Engine and Docker Compose](https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository)
     * Add user to docker group
-        * `sudo usermod -aG docker ${USER}` (replace ${USER} with your linux username)
+        * `sudo usermod -aG docker {USER}` (replace `{USER}` with your linux username)
 1. [Kubernetes CLI, kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/) to manage the DOK cluster and install the app's Helm charts
 1. [DOCLT](https://docs.digitalocean.com/reference/doctl/how-to/install/) to manage the DOK cluster, communicate securely with your private container registry and pull images it needs to run in your cluster.
 1. [Istio and setup istioctl bin](https://istio.io/latest/docs/setup/getting-started/#download)
@@ -34,7 +34,7 @@ The Ubuntu OS is recommended and you will need to install the following:
 
 :::note
 
-When running any commands below with {PROJECT_MACHINE_NAME}, change this to your own project's name.
+When running any commands below with `{PROJECT_MACHINE_NAME}`, change this to your own project's name.
 
 :::
 
@@ -43,7 +43,6 @@ On the DevOps machine, clone the repo at your production tag or branch.
 ```
 git clone https://github.com/appcket/appcket-org.git -b main {PROJECT_MACHINE_NAME}
 ```
-
 ### Provision resources with Terraform
 
 We will use Hashicorp's Terraform to provision the DigitalOcean resources in an automated way.
@@ -60,7 +59,10 @@ When you create your Personal Access Token, you can use "terraform-digitalocean-
 
 :::
 
-`cd deployment/environment/production/provision/digitalocean`
+Ensure you are in the correct directory
+```
+cd deployment/environment/production/provision/digitalocean
+```
 
 Initialize Terraform
 
@@ -72,7 +74,7 @@ Run the terraform plan command to see what Terraform will do
 
 ```
 terraform plan \
-  -var "do_token=${DO_PAT}" \
+  -var "do_token={DO_PAT}" \
   -var "pvt_key=$HOME/.ssh/id_rsa"
 ```
 
@@ -86,28 +88,33 @@ If you previously set the name servers for your domain to DigitalOcean, you may 
 
 ```
 terraform apply \
-  -var "do_token=${DO_PAT}" \
+  -var "do_token={DO_PAT}" \
   -var "pvt_key=$HOME/.ssh/id_rsa"
 ```
 
 Check your DigitalOcean control panel that all resources were created (Project, Database, Kubernetes Cluster, Domain, Private Container Registry + a Load Balancer that DO creates for you automatically on K8s cluster creation)
 
 1. Use the doctl cli client to communicate with Kubernetes cluster
-    * ```
+    ```
     doctl kubernetes cluster kubeconfig save {PROJECT_MACHINE_NAME}-k8s-cluster
+    ```
 1. Make sure your context is set to your Kubernetes cluster
-    * ```
+    ```
     kubectl config current-context
-1. The above result should print "do-nyc1-{PROJECT_MACHINE_NAME}-k8s-cluster"
+    ```
+1. The above result should print "do-nyc1-`{PROJECT_MACHINE_NAME}`-k8s-cluster"
 1. Install Istio into Kubernetes cluster
-    * ```
+    ```
     istioctl install --set profile=default -y
+    ```
     1. Add namespace label
-        * ```
+        ```
         kubectl label namespace default istio-injection=enabled
+        ```
 1. Create the Kubernetes namespace the services will use
-    * ```
+    ```
     kubectl create namespace {PROJECT_MACHINE_NAME}
+    ```
 
 ### Connect Kubernetes cluster with Private Container Registry
 
@@ -117,17 +124,19 @@ Be sure to follow "Option 1: Adding Secret to All Namespaces in Kubernetes Clust
 
 ### Create Kubernetes secrets
 
-1. ```
+```
 kubectl create secret generic database-secret --from-literal=user=dbuser --from-literal=password={DATABASE_PASSWORD} -n {PROJECT_MACHINE_NAME}
+```
 
-:::warning
+:::danger
 
 The default API_CLIENT_KEYCLOAK_SECRET is found in deployment/bootstrap.sh. Use that value for the following command, but you will need to immediately create a new api client secret and keycloakClientPublicKey (found in deployment/helm/values-production.yaml) using the admin Keycloak account and re-deploy using this new value!
 
 :::
 
-1. ```
+```
 kubectl create secret generic api-keycloak-client-secret --from-literal=clientsecret={API_CLIENT_KEYCLOAK_SECRET} -n {PROJECT_MACHINE_NAME}
+```
 
 ### CoreDNS
 Delete any previous configmaps named coredns
@@ -152,11 +161,11 @@ Using your domain registrar's control panel, delegate your domain by [pointing i
     * `accounts`
     * `app`
     * `api`
-1. Create an A record `@` for the apex domain {PROJECT_NAME}.com and **direct to the load balancer**.
+1. Create an A record `@` for the apex domain `{PROJECT_MACHINE_NAME}`.com and **direct to the load balancer**.
 
 #### Create production TLS certificates
 
-Use cert-bot DNS method to create certificates ({PROJECT_MACHINE_NAME}.com, accounts.{PROJECT_MACHINE_NAME}.com, app.{PROJECT_MACHINE_NAME}.com, api.{PROJECT_MACHINE_NAME}.com).
+Use cert-bot DNS method to create certificates (`{PROJECT_MACHINE_NAME}`.com, accounts.`{PROJECT_MACHINE_NAME}`.com, app.`{PROJECT_MACHINE_NAME}`.com, api.`{PROJECT_MACHINE_NAME}`.com).
 
 Change ".com" to whatever is your top level domain.
 
@@ -194,31 +203,42 @@ sudo chmod 644 /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/privkey.pem
 ```
 
 1. Accounts
-    * ```
+    ```
     sudo cp /etc/letsencrypt/live/accounts.{PROJECT_MACHINE_NAME}.com/fullchain.pem accounts/tls.crt
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/accounts.{PROJECT_MACHINE_NAME}.com/privkey.pem accounts/tls.key
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/accounts.{PROJECT_MACHINE_NAME}.com/fullchain.pem api/certs/accounts.tls.crt
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/accounts.{PROJECT_MACHINE_NAME}.com/privkey.pem api/certs/accounts.tls.key
+    ```
 1. Api
-    * ```
+    ```
     sudo cp /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/fullchain.pem api/certs/api.tls.crt
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/privkey.pem api/certs/api.tls.key
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/fullchain.pem api/certs/rootCA.crt
+    ```
 1. App
-    * ```
+    ```
     sudo cp /etc/letsencrypt/live/app.{PROJECT_MACHINE_NAME}.com/fullchain.pem app/certs/app.tls.crt
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/app.{PROJECT_MACHINE_NAME}.com/privkey.pem app/certs/app.tls.key
+    ```
 1. Marketing
-    * ```
+    ```
     sudo cp /etc/letsencrypt/live/{PROJECT_MACHINE_NAME}.com/fullchain.pem marketing/certs/tls.crt
-    * ```
+    ```
+    ```
     sudo cp /etc/letsencrypt/live/{PROJECT_MACHINE_NAME}.com/privkey.pem marketing/certs/tls.key
+    ```
 1. Database
     * DigitalOcean requires ssl connection to the database. So you need to download the ca-certificate.crt from the control panel and copy it to the `api/certs` folder
 
@@ -250,15 +270,15 @@ MikroOrm CLI is used to migrate and seed the initial data for the application.
 1. `cd database` - if you are already inside the deployment folder
 1. modify the values in mikro-orm.config.ts to match your production database values.
     * Note: DigitalOcean requires ssl connection, so you need to download the ca-certificate.crt from the control panel and copy to the deployment/database folder and uncomment the appropriate lines in mikro-orm.config.ts.
-1. `yarn` - if packages not already installed
-1. `yarn schema-seed`
-1. `yarn post-seed`
+1. `pnpm install` - if packages not already installed
+1. `pnpm schema-seed`
+1. `pnpm post-seed`
 
 You are now ready to [build and deploy to production](./build-deploy).
 
 ### Destroy all resources and project
 
-:::warning
+:::danger
 
 This will destroy all resources, be careful!
 
