@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies using pnpm, cache/restore them and build the source code
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI w/ pnpm
+name: Deploy Docusaurus content to Pages
 
 on:
   push:
@@ -9,8 +9,18 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 jobs:
-  build:
+  deploy:
 
     runs-on: ubuntu-latest
 
@@ -39,10 +49,13 @@ jobs:
     - name: Build static files
       run: pnpm run build
 
+    - name: Setup Pages
+      uses: actions/configure-pages@v5
+
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v4
       with:
-        path: './build'
+        path: build
 
     - name: Deploy to GitHub Pages
       id: deployment
