@@ -28,18 +28,4 @@ This command generates static content into the `build` directory and can be serv
 
 We use Github Pages as the host for the appcket-docs site.
 
-Using SSH:
-
-```bash
-USE_SSH=true pnpm deploy
-```
-
-Not using SSH:
-
-```bash
-GIT_USER=<Your GitHub username> pnpm deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `main` branch.
-
-See [this gist](https://gist.github.com/plembo/84f80c920bb5ac6f19e53fe6f8db1ff7) for information on how to setup a custom domain for GitHub Pages.
+Any commit to main will trigger the GitHub Action defined in .github/workflows/node.js.yml which will build the static files to be served by GitHub Pages.
