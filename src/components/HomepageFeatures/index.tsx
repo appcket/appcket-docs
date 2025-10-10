@@ -23,6 +23,9 @@ export default function HomepageFeatures(): ReactNode {
             <div>
             <ul>
               <li>
+                Modern marketing site using <a href="https://astro.build/" target="_blank" rel="noopener noreferrer">Astro</a>
+              </li>
+              <li>
                 Single page app using <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a> + Typescript
                 <ul>
                   <li>

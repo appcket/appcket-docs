@@ -30,10 +30,9 @@ function HomepageHeader() {
 }
 
 export default function Home(): ReactNode {
-  const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
+      title={`Hello from the official Appcket documentation site`}
       description="Appcket is a full-stack, open-source Typescript starter-kit for building web applications on Kubernetes.">
       <HomepageHeader />
       <main>

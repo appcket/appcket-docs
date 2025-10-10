@@ -1,6 +1,6 @@
-# Website
+# Appcket Documentation
 
-This website is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
+This is the documentation site for the [Appcket full stack starter kit](https://github.com/appcket/appcket-org). It is built using [Docusaurus](https://docusaurus.io/), a modern static website generator.
 
 ## Installation
 
