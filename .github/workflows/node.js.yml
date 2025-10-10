@@ -38,3 +38,12 @@ jobs:
     
     - name: Build static files
       run: pnpm run build
+
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v4
+      with:
+        path: './build'
+
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
