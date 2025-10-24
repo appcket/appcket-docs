@@ -22,22 +22,27 @@ Put a breakpoint in validateToken() method of api/node_modules/keycloak-connect/
 
 See the current running config
 
-    kubectl get configmap -n kube-system coredns -o yaml
+```
+kubectl get configmap -n kube-system coredns -o yaml
+```
 
 or
 
-    kubectl describe cm coredns -n kube-system
+```
+kubectl describe cm coredns -n kube-system
+```
 
 This will allow you to see what the k8s coredns config is and let you troubleshoot any connectivity issues between the api and accounts services.
 
 ### SSL Errors or Unable to reach an app in the browser unexpectedly (ERR_CONNECTION_CLOSED)
 
 The istio-ingressgateway pod and your application pods might need to be restarted:
-
+```
     kubectl scale deployment istio-ingressgateway --replicas=0 -n istio-system
     kubectl scale deployment istio-ingressgateway --replicas=1 -n istio-system
     cd ./deployment
     ./environment/local/start.sh
+```
 
 See [this GH issue](https://github.com/istio/istio/issues/14942#issuecomment-816430434) for more info.
 
@@ -47,26 +52,37 @@ See [this GH issue](https://github.com/istio/istio/issues/14942#issuecomment-816
 
 Make a backup of the keycloak (accounts) and api schemas
 
-exec into the database container and run commands:
+exec into the database container
+```
+docker exec -it appcket-database-1 bash
+```
 
-    docker exec -it appcket-database-1 bash
+and run commands:
+```
     cd /tmp
     pg_dump --verbose --host=localhost --port=5432 --username=dbuser --format=c -n "appcket" -n "keycloak" appcket > appcket_keycloak.backup
+```
 
 To get a plaintext dump run
 
 appcket_dump.sql
 
-        pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "appcket" appcket > appcket_dump.sql
+```
+pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "appcket" appcket > appcket_dump.sql
+```
 
 keycloak_dump.sql
+```
+pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "keycloak" appcket > keycloak_dump.sql
+```
 
-        pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "keycloak" appcket > keycloak_dump.sql
+The backup(s) should now be on your host filesystem, e.g. `deployment/environment/local/appcket_keycloak.backup`
 
-The backup should now be on your host filesystem in deployment/environment/local/api_public_dump.backup
+If you need to restore a .backup file for Postgres:
 
-If you need to restore a .backup file for postgres: `pg_restore -h localhost -p 5432 -U dbuser -d appcket api_public_dump.backup`
-
+```
+pg_restore -h localhost -p 5432 -U dbuser -d appcket api_public_dump.backup
+```
 
 ### Setup Appcket Realm in Keycloak
 
@@ -76,11 +92,13 @@ If you need to restore a .backup file for postgres: `pg_restore -h localhost -p 
 1. Import the `deployment/environment/local/realm-export.json` file and click Create
 1. Create a Kubernetes secret for the Keycloak api client secret (You need to perform this step once you have your keycloak instance running, otherwise the api container will not start properly). Change the actual clientsecret value to the value of your api client secret found in the Keycloak admin ui at: Clients -> appcket_api -> Credentials -> Client Id and Secret -> Regenerate Secret)
 
-        kubectl create secret generic api-keycloak-client-secret --from-literal=clientsecret=Your-Api-Client-Secret-From-Keycloak -n appcket
+```
+kubectl create secret generic api-keycloak-client-secret --from-literal=clientsecret=Your-Api-Client-Secret-From-Keycloak -n appcket
+```
 
 ## Accounts (Keycloak) Admin Setup
 
-It is recommended to automate the following steps by performing the above setup process. Only perform the below steps if you want to setup a new Keycloak realm from scratch.
+It is recommended to automate the following steps by performing the above setup process. During the bootstrap process when setting up a local dev env, the keycloak_dump.sql script will setup the realm for you. Only perform the below steps if you want to setup a new Keycloak realm from scratch.
 You can either setup the Realm, Roles, Permissions, etc. manually using the instructions below, or you can import the deployment/environment/local/realm-export.json file above to get started faster. Just login to Keycloak as the admin and go to Add Realm and click the import button to select the file.
 
 Create your users as needed.

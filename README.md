@@ -16,6 +16,8 @@ pnpm start
 
 This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
 
+You can access it locally at [http://localhost:3030/](http://localhost:3030/)
+
 ## Build
 
 ```bash
