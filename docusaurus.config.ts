@@ -7,7 +7,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Appcket Docs',
   tagline: 'Learn how to use Appcket as the foundation for your application',
-  favicon: 'img/favicon.ico',
+  favicon: 'img/favicon.svg',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
@@ -77,10 +77,10 @@ const config: Config = {
       respectPrefersColorScheme: true,
     },
     navbar: {
-      title: 'Appcket Docs Home',
+      title: '',
       logo: {
         alt: 'Appcket Logo',
-        src: 'img/appcket-logo.png',
+        src: 'img/logo.svg',
       },
       items: [
         {

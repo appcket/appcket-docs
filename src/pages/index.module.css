@@ -21,3 +21,8 @@
   align-items: center;
   justify-content: center;
 }
+
+[data-theme='dark'] .heroBanner {
+  color: #fff;
+  background-color: #03071d;
+}
