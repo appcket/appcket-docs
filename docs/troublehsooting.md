@@ -6,7 +6,17 @@ slug: /troubleshooting
 
 ## Determine the Reason for Pod Failure
 
-* ` kubectl get pod marketing-85bbcc5c58-97wz5 --output=yaml -n appcket`
+FIrst get the list of pod names with `kubectl get pod -n appcket`
+
+* ` kubectl get pod -n appcket --output=yaml marketing-85bbcc5c58-97wz5`
+
+Or
+
+* `kubectl logs -n appcket accounts-684644f7d6-z5ws5`
+
+## Exec into a running container
+
+* `kubectl exec -n appcket -it svc/marketing -- bash`
 
 ## Api/Accounts integration
 
@@ -279,7 +289,7 @@ Setup environment variables in Insomnia and POST to the openid-connect token end
     --data username=yourusername \
     --data password=yourpasswordforusername
 
-#### Docker Desktop Kubernetes Upgrade
+#### Rancher Desktop Kubernetes Upgrade
 
 When Kubernetes gets upgraded, the namespace, secrets and coredns configmap may get deleted or reset. You will need to manually recreate these. Replace variables below with your own values, similar to when running bootsrap.sh.
 

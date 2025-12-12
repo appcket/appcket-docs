@@ -73,13 +73,13 @@ Modify values in `deployment/helm/values-production.yaml` to match your producti
 
 :::danger
 
-The default Admin username and password is **admin/admin**. Please immediately login to accounts.`{PROJECT_NAME}`.com and change this to something strong! You can also change the username and password for the dummy user accounts at this time and store them in your teams password manager.
+The default Admin username and password is **admin/admin**. Please immediately login to `accounts.{PROJECT_NAME}.com` and change this to something strong! You can also change the username and password for the dummy user accounts at this time and store them in your team's password manager.
 
 :::
 
 :::tip
 
-You're pods should now be running and available in the browser
+You're pods should now be running and accessible via any browser. e.g.:
 
 1. https://appcket.com
 1. https://accounts.appcket.com
@@ -90,4 +90,4 @@ You're pods should now be running and available in the browser
 
 ## Amazon (EKS)
 
-Help is needed here to document the steps for deploying to Amazon; similar to the DigitalOcean steps above.
+Help is needed here to document the steps for deploying to Amazon; similar to the DigitalOcean steps above. TODO: Convert the deployment steps to a GitHub Action.

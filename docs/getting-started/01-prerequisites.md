@@ -3,59 +3,72 @@ id: prerequisites
 title: Prerequisites
 ---
 
-These instructions are intended to be performed using Windows, but as long as equivalent items are installed it should work fine on Linux or MacOS.
+These instructions are written for Windows, but should work on Linux or macOS if equivalent software is installed.
 
-On Windows, it is mandatory that you use WSL2 and the Ubuntu distro for all development work. In other words, do not save your files on the Windows C:\ drive. Your files (git repos) should be inside of the Ubuntu WSL filesystem at `\wsl$\Ubuntu\home\{YourUsername}`. See [this blog post](https://www.docker.com/blog/docker-desktop-wsl-2-best-practices/) for reasoning and best practices.
+On Windows, you must use WSL2 and the latest Ubuntu distro for development. Do not save your work on the Windows C: drive. Your git repositories should be stored inside the Ubuntu WSL filesystem, for example: `\\wsl.localhost\\Ubuntu-24.04\\home\\{YOUR_USERNAME}\\dev`.
 
-Install Windows software using [Chocolatey](https://chocolatey.org/) or similar. Install Ubuntu software inside WSL Ubuntu using the normal apt process.
+Install Windows software with [Chocolatey](https://chocolatey.org/) or a similar package manager. Install Ubuntu packages inside WSL using the apt package manager.
 
 ### Hardware
 
-1. A newish CPU
-1. At least 16 GB ram
+1. A recent CPU
+1. At least 16 GB RAM
 
 ### Windows software
 
-1. WSL2 with Ubuntu 20.04
-1. Windows Terminal
-1. [Docker for Windows](https://docs.docker.com/docker-for-windows/install/) - latest
-    * use WSL2 based Engine, instead of the Hyper-V backend
-    * Enable Kubernetes
-1. [Docker Compose](https://docs.docker.com/compose/install/)
+1. [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) - "Ubuntu-24.04" as the distro
+1. [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install)
 1. [Mkcert](https://github.com/FiloSottile/mkcert)
-    * Run Powershell as Administrator and run the command:
+    * Run PowerShell as Administrator and run the command:
     * `choco install mkcert`
+    * Allow certificates to be trusted automatically.
+        * In PowerShell run `mkcert.exe -install`
 1. [Visual Studio Code](https://code.visualstudio.com/) - latest
     * [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-    * [Eslint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-    * [Prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+    * [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+    * [Prettier extension](https://marketplace.visualstudio.com/items?itemName=prettier.prettier-vscode)
+1. [Rancher Desktop for Windows](https://docs.rancherdesktop.io/getting-started/installation/#windows)
+    * Rancher Desktop installs everything you need, like Docker, Docker Compose, kubectl, and Helm.
+    * Preferences ➡️ Application ➡️ Behavior ➡️ select **Automatically start at login** and **Start in the background**
+    * Preferences ➡️ WSL ➡️ select **Ubuntu-24.04** distro
+    * Preferences ➡️ Container Engine ➡️ select **dockerd (moby)**
+    * Preferences ➡️ Kubernetes ➡️ select **Enable Kubernetes**
+        * For the Kubernetes version, choose the latest stable version
+    * Create a registries.yaml file inside the rancher-desktop WSL instance
+        * In a PowerShell terminal run:
+        ```
+        wsl.exe -d rancher-desktop -u root -- sh -c 'cat <<EOF > /etc/rancher/k3s/registries.yaml
+        mirrors:
+          "localhost:5000":
+            endpoint:
+              - "http://localhost:5000"
+        EOF'
+        ```
+        * To verify the registries.yaml file was created, run `wsl.exe -d rancher-desktop -u root -- sh` from PowerShell to open a shell in the rancher-desktop WSL instance, then run `cat /etc/rancher/k3s/registries.yaml`.
+        * **Restart Rancher Desktop for this change to take effect**
 
 ### WSL/Ubuntu software
 
-1. [NodeJS via nvm](https://learn.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-wsl) - 24
-1. [pnpm](https://pnpm.io/installation) -latest
-1. [Istio](https://istio.io/) - 1.14+
-    * Follow the [download and installation instructions](https://istio.io/latest/docs/setup/getting-started/#download) on istio.io
-    * Be sure to add the following line to your `~/.profile`
-        * `export PATH=~/path/to/istio/bin:$PATH`
-1. [Helm](https://helm.sh/docs/intro/install/#from-apt-debianubuntu) - 3+
-1. [Mkcert](https://github.com/FiloSottile/mkcert)
-    * `wget https://github.com/FiloSottile/mkcert/releases/download/v1.4.4/mkcert-v1.4.4-linux-amd64`
-    * `sudo mv mkcert-v1.4.4-linux-amd64 /usr/local/bin/mkcert`
-    * `sudo chmod +x /usr/local/bin/mkcert`
+1. [pnpm](https://pnpm.io/installation) - latest
+1. [NodeJS recommended to install with pnpm env](https://pnpm.io/cli/env) - 24+
+    * After installing node via pnpm env, need to install libatomic1: `sudo apt update && sudo apt install libatomic1`
+1. [Istio](https://istio.io/) - 1.28+
+    * Istio documentation is a little scattered, so we've summarized the commands you need below. For more information, see [Ambient mode download and installation instructions with Helm](https://istio.io/latest/docs/ambient/install/helm/) on istio.io.
+    ```
+    helm repo add istio https://istio-release.storage.googleapis.com/charts && helm repo update
+    helm install istio-base istio/base -n istio-system --create-namespace
+    kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/experimental-install.yaml
+    helm install istiod istio/istiod --namespace istio-system --set profile=ambient
+    # Rancher Desktop uses k3s, so you need to set the platform here (https://istio.io/latest/docs/ambient/install/platform-prerequisites/#k3s)
+    helm install istio-cni istio/cni -n istio-system --set profile=ambient --set global.platform=k3s
+    helm install ztunnel istio/ztunnel -n istio-system
+    ```
+{/*****************************
+    # enable Istio control plane (istiod) to handle TLSRoute. This should not be needed, as you will upgrade the istiod deployment later.
+    kubectl set env deployment/istiod -n istio-system PILOT_ENABLE_ALPHA_GATEWAY_API=true
+
+    # enable all pods in appcket namespace to be part of the ambient mesh. Not sure if this is needed or not.
+    kubectl label namespace appcket istio.io/dataplane-mode=ambient
+*/}
 1. [psql](https://www.postgresql.org/docs/current/app-psql.html)
-    * `sudo apt update`
-    * `sudo apt install -y postgresql-client`
-
-### Setup Mkcert in Windows and WSL
-You will notice that you installed Mkcert in Windows with Chocolatey and also in Ubuntu WSL with apt. This is so we can create certs using the Linux version of mkcert and also those certs will be valid in Windows apps like Chrome for local development.
-
-1. Run "mkcert -install" for certificates to be trusted automatically
-    * In Windows Powershell run `mkcert.exe -install`
-    * In a Windows Terminal WSL shell run `mkcert -install`
-1. In Windows Powershell, find out where the mkcert directory is
-    * `mkcert.exe -CAROOT`
-1. In a Windows Terminal WSL shell, find out where the mkcert directory is
-    * `mkcert -CAROOT`
-1. Copy the rootCA files from Windows to the WSL mckert directory
-    * ex: `sudo cp /mnt/c/Users/{YourUsername}/AppData/Local/mkcert/rootCA* /home/{YourUsername}/.local/share/mkcert`
+    * `sudo apt update && sudo apt install -y postgresql-client`

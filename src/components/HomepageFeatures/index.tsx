@@ -45,7 +45,7 @@ export default function HomepageFeatures(): ReactNode {
               </li>
               <li><a href="https://www.postgresql.org/" target="_blank" rel="noopener noreferrer">Postgres</a> Database</li>
               <li>
-                Local development using <a href="https://docs.docker.com/desktop/" target="_blank" rel="noopener noreferrer">Docker Desktop</a> and <a href="https://kubernetes.io/" target="_blank" rel="noopener noreferrer">Kubernetes</a>
+                Local development using <a href="https://rancherdesktop.io/" target="_blank" rel="noopener noreferrer">Rancher Desktop</a> and <a href="https://k3s.io/" target="_blank" rel="noopener noreferrer">Kubernetes (k3s flavor)</a>
               </li>
             </ul>
           </div>
@@ -56,7 +56,7 @@ export default function HomepageFeatures(): ReactNode {
 
           <p>It even comes with a fully working Keycloak instance. A secure and full-featured user accounts experience awaits you and your users. Don't worry about integrating a custom Authentication and Authorization system because Appcket already does this for you!</p>
 
-          <p>If this sounds exciting, read on in the <a href="/getting-started/prerequisites">Getting Started</a> section!</p>
+          <p>If this sounds exciting, read on in the <a href="/docs/getting-started/prerequisites">Getting Started</a> section!</p>
         </div>
 
         <div className={styles.row}>

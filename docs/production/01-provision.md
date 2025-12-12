@@ -130,7 +130,7 @@ kubectl create secret generic database-secret --from-literal=user=dbuser --from-
 
 :::danger
 
-The default API_CLIENT_KEYCLOAK_SECRET is found in deployment/bootstrap.sh. Use that value for the following command, but you will need to immediately create a new api client secret and keycloakClientPublicKey (found in deployment/helm/values-production.yaml) using the admin Keycloak account and re-deploy using this new value!
+The default API_CLIENT_KEYCLOAK_SECRET is found in `deployment/bootstrap.sh`. Use that value for the following command, but you will need to immediately create a new api client secret and keycloakClientPublicKey (found in `deployment/helm/values-production.yaml`) using the admin Keycloak account and re-deploy using this new value!
 
 :::
 
@@ -240,7 +240,7 @@ sudo chmod 644 /etc/letsencrypt/live/api.{PROJECT_MACHINE_NAME}.com/privkey.pem
     sudo cp /etc/letsencrypt/live/{PROJECT_MACHINE_NAME}.com/privkey.pem marketing/certs/tls.key
     ```
 1. Database
-    * DigitalOcean requires ssl connection to the database. So you need to download the ca-certificate.crt from the control panel and copy it to the `api/certs` folder
+    * DigitalOcean requires tls connection to the database. So you need to download the `ca-certificate.crt` from the control panel and copy it to the `api/certs` folder
 
 ### Set up accounts schema and data
 
