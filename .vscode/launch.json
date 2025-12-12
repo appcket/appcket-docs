@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run Docusaurus (pnpm)",
+      "request": "launch",
+      "type": "node",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "start"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "PORT": "3030",
+        "NODE_OPTIONS": "--inspect=9229"
+      },
+      "autoAttachChildProcesses": true
+    }
+  ]
+}

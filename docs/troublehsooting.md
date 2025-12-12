@@ -4,11 +4,19 @@ title: Troubleshooting
 slug: /troubleshooting
 ---
 
+## VS Code gets disconnected from an attached Kubernetes container
+
+During local development, if your computer goes to sleep, you may lose the attached VS Code session. In this case, you need to kill the existing node process that was running on port 3000 by running the command below. Then restart the dev process to continue developing.
+
+```
+PID=$(netstat -tulnp | grep ':3000' | awk '{print $7}' | cut -d'/' -f1); if [ -n "$PID" ]; then kill $PID && echo 'Process killed.'; else echo 'No process found.'; fi
+```
+
 ## Determine the Reason for Pod Failure
 
 FIrst get the list of pod names with `kubectl get pod -n appcket`
 
-* ` kubectl get pod -n appcket --output=yaml marketing-85bbcc5c58-97wz5`
+* `kubectl get pod -n appcket --output=yaml marketing-85bbcc5c58-97wz5`
 
 Or
 
