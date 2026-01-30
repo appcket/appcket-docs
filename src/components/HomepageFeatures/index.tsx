@@ -7,10 +7,10 @@ export default function HomepageFeatures(): ReactNode {
       <div className="container">
         <div className={styles.row}>
           <h2>What is Appcket?</h2>
-          <p>You have an idea for an app you want to build. Appcket is like strapping your app idea to a rocket 🚀. It's a starter-kit that provides teams and developers like yourself with a solid base on which to build their next great web app and get up and running quickly.</p>
+          <p>You have an idea for an app you want to build. Appcket is like strapping your app idea to a rocket 🚀. It's an open-source, event-driven blueprint for building real-time applications on Kubernetes using System Design 2.0.</p>
 
           <p>
-          We believe starting, developing, testing and deploying a web application these days shouldn't be complex even when using Kubernetes. The "boring" part of gluing everything together and making sure all the details are covered has been done for you so you can focus on your competitive advantage and what makes your idea unique.</p>
+          In the wake of AI and LLM progess, we believe there is a new system design and architecture emerging that should match how users expect a modern application to behave. The "boring" part of gluing all of these concepts together and making sure all the details are covered has been done for you. You simply focus on your competitive advantage and what makes your idea unique.</p>
         </div>
 
         <div className={styles.row}>
@@ -44,6 +44,8 @@ export default function HomepageFeatures(): ReactNode {
                 </ul>
               </li>
               <li><a href="https://www.postgresql.org/" target="_blank" rel="noopener noreferrer">Postgres</a> Database</li>
+              <li><a href="https://clickhouse.com/" target="_blank" rel="noopener noreferrer">ClickHouse</a> Data Warehouse</li>
+              <li><a href="https://www.redpanda.com/" target="_blank" rel="noopener noreferrer">Redpanda</a> Data Streaming Platform</li>
               <li>
                 Local development using <a href="https://rancherdesktop.io/" target="_blank" rel="noopener noreferrer">Rancher Desktop</a> and <a href="https://k3s.io/" target="_blank" rel="noopener noreferrer">Kubernetes (k3s flavor)</a>
               </li>
@@ -57,6 +59,8 @@ export default function HomepageFeatures(): ReactNode {
           <p>It even comes with a fully working Keycloak instance. A secure and full-featured user accounts experience awaits you and your users. Don't worry about integrating a custom Authentication and Authorization system because Appcket already does this for you!</p>
 
           <p>If this sounds exciting, read on in the <a href="/docs/getting-started/prerequisites">Getting Started</a> section!</p>
+
+          <p>You can also learn more about the <a href="/docs/architecture">architecture</a> of the system.</p>
         </div>
 
         <div className={styles.row}>

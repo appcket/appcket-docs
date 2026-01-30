@@ -31,21 +31,24 @@ When running any commands below with `{PROJECT_MACHINE_NAME}`, change this to yo
     git clone https://github.com/appcket/appcket-org.git -b main main
     cd main
     ```
-1. Update the Istio control plane (istiod) to handle TLSRoute
-    ```
-    helm upgrade istiod istio/istiod -n istio-system -f ./deployment/helm/values-local-istio.yaml
-    ```
 1. In order to be able to mount your files into running Kubernetes containers, you will need to create a bind mount from your Ubuntu home dev directory to under /mnt/wsl on your host. Using Windows Terminal in your Ubuntu WSL distribution, run:
     * `mkdir -p /mnt/wsl/rancher-desktop-bind-mounts/dev`
     * `sudo mount --bind ~/dev /mnt/wsl/rancher-desktop-bind-mounts/dev`
         * You need to repeat the above steps each time you restart your computer. To simplify this, use the `start.sh` script in `deployment/environment/local` anytime you want to start your local environment.
-    * Update the `deployment/helm/values-local.yaml` in the `app.hostPath`, `api.hostPath`, and `marketing.hostPath` sections to point to the correct mount paths on your WSL instance.
+    * Update the `deployment/environment/local/helm/values.yaml` in the `app.hostPath`, `api.hostPath`, and `marketing.hostPath` sections to point to the correct mount paths on your WSL instance.
     * It should be something similar to: `/mnt/wsl/rancher-desktop-bind-mounts/dev/{PROJECT_MACHINE_NAME}/{GIT_BRANCH_NAME}/marketing`.
 
 ### Add host entries
 
 1. Hardcode the following host entries in your hosts file (on Windows it's `C:\Windows\System32\drivers\etc\hosts`, and on Linux it's usually `/etc/hosts`).
-    * `127.0.0.1 {PROJECT_MACHINE_NAME}.localhost accounts.{PROJECT_MACHINE_NAME}.localhost app.{PROJECT_MACHINE_NAME}.localhost api.{PROJECT_MACHINE_NAME}.localhost`
+    ```
+    127.0.0.1 {PROJECT_MACHINE_NAME}.test
+    127.0.0.1 accounts.{PROJECT_MACHINE_NAME}.test
+    127.0.0.1 app.{PROJECT_MACHINE_NAME}.test
+    127.0.0.1 api.{PROJECT_MACHINE_NAME}.test
+    127.0.0.1 redpanda.{PROJECT_MACHINE_NAME}.test
+    127.0.0.1 sequin.{PROJECT_MACHINE_NAME}.test
+    ```
 
 ### Run the Bootstrap Script
 
@@ -62,14 +65,15 @@ Running the bootstrap script will take some time depending on your internet conn
 
 :::
 
-### Create Tables and Seed Data
+### Trust the local certs
 
-MikroORM is used in the API to interact with the database. We also use the MikroORM CLI to migrate and seed the initial sample data for the application. Accounts (Keycloak) data was set up when you ran the bootstrap script.
-
-1. `cd database` - if you are already inside the `deployment` folder; if not, `cd` to the `deployment` folder.
-1. `pnpm install`
-1. `pnpm schema-seed`
-1. `pnpm post-seed`
+1. A trust-local-ca.sh script is provided that when run, will make your Windows machine and browsers trust the locally issued certs.
+    1. Then run the `deployment/environment/local/trust-local-ca.sh` script:
+        * `cd ~/dev/appcket-org/{GIT_BRANCH_NAME}/deployment/environment/local`
+        * `chmod +x ./trust-local-ca.sh`
+        * `./trust-local-ca.sh`
+        * Running the script will result in another command that you need to run in a Powershell administrator terminal
+        * You will need to completely close your browser and re-open to ensure the certs are now trusted
 
 ### Start Containers
 
@@ -90,21 +94,20 @@ MikroORM is used in the API to interact with the database. We also use the Mikro
     * You can also select `Run -> Start Debugging (F5)` to run each app in VS Code.
     * The Keycloak/accounts server will start automatically (you need to give the accounts service a couple minutes to completely load).
     * Access these local containers in your browser
-        * Marketing: `https://{PROJECT_MACHINE_NAME}.localhost`
-        * API: `https://api.{PROJECT_MACHINE_NAME}.localhost`
-        * App: `https://app.{PROJECT_MACHINE_NAME}.localhost`
-            * Login with any username below and `abc123` as the password
+        * Marketing: `https://{PROJECT_MACHINE_NAME}.test`
+        * API: `https://api.{PROJECT_MACHINE_NAME}.test`
+        * App: `https://app.{PROJECT_MACHINE_NAME}.test`
+            * Login with any user below and `abc123` as the password
                 * `art` (Manager role)
                 * `ryan` (Captain role)
                 * `kel` (Teammate role)
                 * `he` (Teammate role)
-                * `lloyd` (Spectator role)
+                * `lloyd@appcket.org` (Spectator role)
             * e.g., the Spectator role is view-only, so the `lloyd` user can view but cannot edit or create anything.
-        * Accounts: `https://accounts.{PROJECT_MACHINE_NAME}.localhost`
+        * Accounts: `https://accounts.{PROJECT_MACHINE_NAME}.test`
             * The default admin account username and password are `admin/admin`
 
 ### Database Schema Changes
-
 
 As you develop your application, you will need to update your data model.
 

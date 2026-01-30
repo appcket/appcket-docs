@@ -18,15 +18,11 @@ Install Windows software with [Chocolatey](https://chocolatey.org/) or a similar
 
 1. [WSL2](https://learn.microsoft.com/en-us/windows/wsl/install) - "Ubuntu-24.04" as the distro
 1. [Windows Terminal](https://learn.microsoft.com/en-us/windows/terminal/install)
-1. [Mkcert](https://github.com/FiloSottile/mkcert)
-    * Run PowerShell as Administrator and run the command:
-    * `choco install mkcert`
-    * Allow certificates to be trusted automatically.
-        * In PowerShell run `mkcert.exe -install`
 1. [Visual Studio Code](https://code.visualstudio.com/) - latest
     * [Remote - Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
     * [ESLint extension](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
     * [Prettier extension](https://marketplace.visualstudio.com/items?itemName=prettier.prettier-vscode)
+    * [Kubernetes Tools extension](https://marketplace.visualstudio.com/items?itemName=ms-kubernetes-tools.vscode-kubernetes-tools)
 1. [Rancher Desktop for Windows](https://docs.rancherdesktop.io/getting-started/installation/#windows)
     * Rancher Desktop installs everything you need, like Docker, Docker Compose, kubectl, and Helm.
     * Preferences ➡️ Application ➡️ Behavior ➡️ select **Automatically start at login** and **Start in the background**
@@ -58,17 +54,39 @@ Install Windows software with [Chocolatey](https://chocolatey.org/) or a similar
     helm repo add istio https://istio-release.storage.googleapis.com/charts && helm repo update
     helm install istio-base istio/base -n istio-system --create-namespace
     kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/experimental-install.yaml
-    helm install istiod istio/istiod --namespace istio-system --set profile=ambient
+    helm install istiod istio/istiod --namespace istio-system --set profile=ambient \
+        --set "pilot.env.PILOT_ENABLE_GATEWAY_API=true" \
+        --set "pilot.env.PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER=true"
     # Rancher Desktop uses k3s, so you need to set the platform here (https://istio.io/latest/docs/ambient/install/platform-prerequisites/#k3s)
     helm install istio-cni istio/cni -n istio-system --set profile=ambient --set global.platform=k3s
     helm install ztunnel istio/ztunnel -n istio-system
     ```
-{/*****************************
-    # enable Istio control plane (istiod) to handle TLSRoute. This should not be needed, as you will upgrade the istiod deployment later.
-    kubectl set env deployment/istiod -n istio-system PILOT_ENABLE_ALPHA_GATEWAY_API=true
-
-    # enable all pods in appcket namespace to be part of the ambient mesh. Not sure if this is needed or not.
-    kubectl label namespace appcket istio.io/dataplane-mode=ambient
-*/}
+1. Cert-Manager
+    * When installing cert-manager from the Redpanda docs, I ran into an error: "container has runAsNonRoot and image will run as root". We are going to disable the security check and install cert-manager using the command below. ***Not for production***, but acceptable for a local dev environment.
+    ```
+    helm repo add jetstack https://charts.jetstack.io
+    helm repo update
+    helm install cert-manager jetstack/cert-manager \
+        --namespace cert-manager \
+        --create-namespace \
+        --version v1.19.2 \
+        --set crds.enabled=true \
+        --set securityContext.runAsNonRoot=false \
+        --set webhook.securityContext.runAsNonRoot=false \
+        --set cainjector.securityContext.runAsNonRoot=false \
+        --set startupapicheck.securityContext.runAsNonRoot=false
+    ```
+1. Redpanda
+    * [Deploy Redpanda to your cluster](https://docs.redpanda.com/current/deploy/redpanda/kubernetes/local-guide/#deploy-redpanda-and-redpanda-console) by running the commands below. In the future if this changes, use the **Redpanda Operator** installation method and `redpanda` for the namespace.
+    ```
+    helm repo add redpanda https://charts.redpanda.com
+    helm repo update
+    helm upgrade --install redpanda-controller redpanda/operator \
+    --namespace redpanda \
+    --create-namespace \
+    --version v25.3.1 \
+    --set crds.enabled=true
+    ```
+    * **DO NOT** install the cluster or topic from the docs. We will do that step later automatically when running the bootstrap.sh script.
 1. [psql](https://www.postgresql.org/docs/current/app-psql.html)
     * `sudo apt update && sudo apt install -y postgresql-client`

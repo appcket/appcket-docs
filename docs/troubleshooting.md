@@ -9,7 +9,75 @@ slug: /troubleshooting
 During local development, if your computer goes to sleep, you may lose the attached VS Code session. In this case, you need to kill the existing node process that was running on port 3000 by running the command below. Then restart the dev process to continue developing.
 
 ```
-PID=$(netstat -tulnp | grep ':3000' | awk '{print $7}' | cut -d'/' -f1); if [ -n "$PID" ]; then kill $PID && echo 'Process killed.'; else echo 'No process found.'; fi
+PID=$(netstat -ltnp 2>/dev/null | grep :3000 | awk '{print $7}' | cut -d/ -f1); [ -n "$PID" ] && kill -9 $PID && echo "Killed $PID" || echo "No process found"
+```
+
+## Network connection to Kubernetes pods is disrupted after computer waking from sleep
+```
+cd deployment/environment/local && ./patch-coredns.sh
+kubectl rollout restart daemonset ztunnel -n istio-system
+kubectl delete pod -n appcket -l app=waypoint
+kubectl rollout restart deployment istio-system-gateway-istio -n istio-system
+```
+
+## Redpanda console not running after computer restart
+
+1. Restart Ztunnel: Flush the data plane.
+    `kubectl rollout restart daemonset ztunnel -n istio-system`
+1. Restart the Redpanda Broker (StatefulSet): Just to be sure it re-registers itself with the CNI.
+    `kubectl delete pod -n redpanda redpanda-0`
+1. Restart the console pod?
+    `kubectl delete pod -n redpanda -l app.kubernetes.io/name=console`
+
+<!--
+kubectl delete pod -n appcket -l app=waypoint
+kubectl rollout restart deployment istio-system-gateway-istio -n istio-system
+
+Since you are using Istio Ambient mode with Ztunnel and Waypoints, and running inside WSL2 with Rancher Desktop, sleep/resume cycles can sometimes break the tunneling or overlay networking between nodes (even
+  in a single-node cluster) or between the Gateway and the Pods.
+
+1. Restart the Ztunnel (Data Plane):
+    The Ztunnel is the component responsible for the actual networking in Ambient mode. If its connection state is stale, traffic fails.
+1     kubectl rollout restart daemonset ztunnel -n istio-system
+
+2. Restart the CNI Node Agent (If applicable):
+    If you have an istio-cni-node daemonset, restarting it can sometimes re-program the iptables/networking rules on the node.
+1     kubectl rollout restart daemonset istio-cni-node -n istio-system
+
+3. Check Service Endpoints:
+    Sometimes the Kubernetes Service loses track of the Pod IP.
+1     kubectl get endpoints accounts -n appcket
+    If this is empty, your Service isn't pointing to the Pod.
+
+4. Restart the Appcket Namespace Waypoint (Again):
+    You tried this (kubectl delete pod ... app=waypoint), but double-check that the Gateway resource for the waypoint is healthy. In Ambient, the "waypoint" is just a Deployment managed by a Gateway resource.
+1     kubectl get gateway -n appcket
+
+I recommend trying Step 1 (Restart Ztunnel) first. That is the most common fix for "connection reset" issues in Ambient mode after network interruptions.
+
+In Istio Ambient, the Ztunnel is responsible for the mTLS overlay and all L4 traffic routing; if the node's
+  network interface fluctuates (common in WSL2 when Windows sleeps), the Ztunnel often needs a kick to re-establish its "secure overlay" connections.
+ -->
+
+## If Redpanda needs to be completely reset and re-deployed
+```
+Delete a stale console pod:
+kubectl delete pod redpanda-console-6bc5c8ffd8-r2f8r -n redpanda
+
+Reset sequin:
+docker exec appcket-database-1 psql -U dbuser -d postgres -c "DROP DATABASE sequin;" && \
+docker exec appcket-database-1 psql -U dbuser -d postgres -c "CREATE DATABASE sequin;" && \ 
+kubectl delete pod -n appcket -l app=sequin
+
+Command to completely reset Redpanda:
+helm uninstall redpanda -n redpanda
+kubectl delete pvc -n redpanda --all
+helm install redpanda ./deployment/environment/local/helm/redpanda -f ./deployment/environment/local/helm/redpanda/values.yaml -n redpanda
+```
+
+## If Sequin crashes and not connecting to redis
+```
+docker restart appcket-redis-1
 ```
 
 ## Determine the Reason for Pod Failure
@@ -32,7 +100,7 @@ Or
 Make sure all the items in the keycloak config are correct for each environment (realm-public-key, etc).
 To get the api client public key, go to the Appcket Realm settings, click on Keys tab, and then click the Public Keys button in the RS256 row. A dialog will pop up that you can copy from.
 
-Make sure the auth-server-url in Keycloak config matches the accounts server url (.localhost instead of .com) by setting the appropriate NODE_ENV variable: NODE_ENV=development or NODE_ENV=production, etc. otherwise you will get Access Denied, (wrong iss) error in grant-manager.js.
+Make sure the auth-server-url in Keycloak config matches the accounts server url (.test instead of .com) by setting the appropriate NODE_ENV variable: NODE_ENV=development or NODE_ENV=production, etc. otherwise you will get Access Denied, (wrong iss) error in grant-manager.js.
 
 Put a breakpoint in validateToken() method of api/node_modules/keycloak-connect/middleware/auth-utils/grant-manager.js to step through the possible reasons why the token could be bad.
 
@@ -104,7 +172,7 @@ pg_restore -h localhost -p 5432 -U dbuser -d appcket api_public_dump.backup
 
 ### Setup Appcket Realm in Keycloak
 
-1. Login to the accounts admin: [https://accounts.appcket.localhost/auth/admin/](https://accounts.appcket.localhost/auth/admin/)
+1. Login to the accounts admin: [https://accounts.appcket.test/auth/admin/](https://accounts.appcket.test/auth/admin/)
 1. Hover over the Master realm name in the top left, and select Add Realm
 1. Import the Appcket realm starter data by clicking Select File
 1. Import the `deployment/environment/local/realm-export.json` file and click Create
@@ -121,11 +189,11 @@ You can either setup the Realm, Roles, Permissions, etc. manually using the inst
 
 Create your users as needed.
 
-Login to local Keycloak instance as the admin user, https://accounts.appcket.localhost
+Login to local Keycloak instance as the admin user, https://accounts.appcket.test
 
 Create a new realm: appcket
 
-In Realm Settings -> General, set the Frontend URL to the kubernetes pod name and port: https://accounts.appcket.localhost/auth
+In Realm Settings -> General, set the Frontend URL to the kubernetes pod name and port: https://accounts.appcket.test/auth
 This is needed so the issuer is not invalid when checking the Bearer token received by the front and app during the check entitlements POST request process on the api side. See https://issues.redhat.com/browse/KEYCLOAK-6073.
 
 Create two clients in keycloak admin area under the realm you just created
@@ -133,10 +201,10 @@ Create two clients in keycloak admin area under the realm you just created
 appcket_app
 
     Access Type = public
-    Root URL = http://app.appcket.localhost
-    Valid Redirect URLS = http://app.appcket.localhost/*, https://appcket.localhost
+    Root URL = http://app.appcket.test
+    Valid Redirect URLS = http://app.appcket.test/*, https://appcket.test
     Base URL = /
-    Web Origins = http://app.appcket.localhost
+    Web Origins = http://app.appcket.test
     Advanced Settings
         - Acess token lifespan, 8 hours
     Authentication Flow Overrides: (???)
@@ -197,7 +265,7 @@ Have users already created (in the new realm you previously created) that you ca
 #### Add Authorization Scopes
 
     Protection API:
-    PUT endpoint https://accounts.appcket.localhost/auth/realms/${realm_name}/authz/protection/resource_set/{resource_id}
+    PUT endpoint https://accounts.appcket.test/auth/realms/${realm_name}/authz/protection/resource_set/{resource_id}
     JSON Body:
     ```
     {
@@ -288,7 +356,7 @@ This is where it all comes together.
 Setup environment variables in Insomnia and POST to the openid-connect token endpoint for the accounts server
 
     curl --request POST \
-    --url https://accounts.appcket.localhost/auth/realms/appcket/protocol/openid-connect/token \
+    --url https://accounts.appcket.test/auth/realms/appcket/protocol/openid-connect/token \
     --header 'content-type: application/x-www-form-urlencoded' \
     --data client_id=appcket_api \
     --data grant_type=password \

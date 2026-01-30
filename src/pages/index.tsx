@@ -33,7 +33,7 @@ export default function Home(): ReactNode {
   return (
     <Layout
       title={`Hello from the official Appcket documentation site`}
-      description="Appcket is a full-stack, open-source Typescript starter-kit for building web applications on Kubernetes.">
+      description="Appcket is an open-source, event-driven blueprint for building real-time, AI-native TypeScript applications on Kubernetes using System Design 2.0.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />
