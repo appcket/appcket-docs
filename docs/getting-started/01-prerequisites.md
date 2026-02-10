@@ -45,48 +45,12 @@ Install Windows software with [Chocolatey](https://chocolatey.org/) or a similar
 
 ### WSL/Ubuntu software
 
-1. [pnpm](https://pnpm.io/installation) - latest
-1. [NodeJS recommended to install with pnpm env](https://pnpm.io/cli/env) - 24+
-    * After installing node via pnpm env, need to install libatomic1: `sudo apt update && sudo apt install libatomic1`
-1. [Istio](https://istio.io/) - 1.28+
-    * Istio documentation is a little scattered, so we've summarized the commands you need below. For more information, see [Ambient mode download and installation instructions with Helm](https://istio.io/latest/docs/ambient/install/helm/) on istio.io.
-    ```
-    helm repo add istio https://istio-release.storage.googleapis.com/charts && helm repo update
-    helm install istio-base istio/base -n istio-system --create-namespace
-    kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/experimental-install.yaml
-    helm install istiod istio/istiod --namespace istio-system --set profile=ambient \
-        --set "pilot.env.PILOT_ENABLE_GATEWAY_API=true" \
-        --set "pilot.env.PILOT_ENABLE_GATEWAY_API_DEPLOYMENT_CONTROLLER=true"
-    # Rancher Desktop uses k3s, so you need to set the platform here (https://istio.io/latest/docs/ambient/install/platform-prerequisites/#k3s)
-    helm install istio-cni istio/cni -n istio-system --set profile=ambient --set global.platform=k3s
-    helm install ztunnel istio/ztunnel -n istio-system
-    ```
-1. Cert-Manager
-    * When installing cert-manager from the Redpanda docs, I ran into an error: "container has runAsNonRoot and image will run as root". We are going to disable the security check and install cert-manager using the command below. ***Not for production***, but acceptable for a local dev environment.
-    ```
-    helm repo add jetstack https://charts.jetstack.io
-    helm repo update
-    helm install cert-manager jetstack/cert-manager \
-        --namespace cert-manager \
-        --create-namespace \
-        --version v1.19.2 \
-        --set crds.enabled=true \
-        --set securityContext.runAsNonRoot=false \
-        --set webhook.securityContext.runAsNonRoot=false \
-        --set cainjector.securityContext.runAsNonRoot=false \
-        --set startupapicheck.securityContext.runAsNonRoot=false
-    ```
-1. Redpanda
-    * [Deploy Redpanda to your cluster](https://docs.redpanda.com/current/deploy/redpanda/kubernetes/local-guide/#deploy-redpanda-and-redpanda-console) by running the commands below. In the future if this changes, use the **Redpanda Operator** installation method and `redpanda` for the namespace.
-    ```
-    helm repo add redpanda https://charts.redpanda.com
-    helm repo update
-    helm upgrade --install redpanda-controller redpanda/operator \
-    --namespace redpanda \
-    --create-namespace \
-    --version v25.3.1 \
-    --set crds.enabled=true
-    ```
-    * **DO NOT** install the cluster or topic from the docs. We will do that step later automatically when running the bootstrap.sh script.
-1. [psql](https://www.postgresql.org/docs/current/app-psql.html)
-    * `sudo apt update && sudo apt install -y postgresql-client`
+1. [Mise](https://mise.jdx.dev/getting-started.html#installing-mise-cli) - install using the Debian/Ubuntu (apt) commands
+    * Mise is a dev env setup tool that will install all the prerequisite software needed for local development. The following is just a list of tools that will get installed when you run the mise bootstrap task on the next page.
+        * pnpm
+        * NodeJS
+        * psql
+        * helm
+        * Istio via helm
+        * Cert-Manager via helm
+        * Redpanda via helm

@@ -143,23 +143,16 @@ exec into the database container
 docker exec -it appcket-database-1 bash
 ```
 
-and run commands:
-```
-    cd /tmp
-    pg_dump --verbose --host=localhost --port=5432 --username=dbuser --format=c -n "appcket" -n "keycloak" appcket > appcket_keycloak.backup
-```
-
 To get a plaintext dump run
 
 appcket_dump.sql
-
 ```
 pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "appcket" appcket > appcket_dump.sql
 ```
 
 keycloak_dump.sql
 ```
-pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "keycloak" appcket > keycloak_dump.sql
+pg_dump --verbose --host=localhost --port=5432 --username=dbuser --inserts -n "keycloak" keycloak > keycloak_dump.sql
 ```
 
 The backup(s) should now be on your host filesystem, e.g. `deployment/environment/local/appcket_keycloak.backup`
